@@ -1,3 +1,4 @@
+#include "../../include/copium.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -117,7 +118,19 @@ void terminal_writestring(const char *data) {
   terminal_write(data, strlen(data));
 }
 
-void kernel_main(void) {
+void kernel_init(void) {
   terminal_initialize();
-  terminal_writestring("Hello, Kernel! \n");
+  terminal_writestring("ScopeOS v0.1.0\n");
+  terminal_writestring("Initializing components...\n");
+
+  // Initialize all subsystems
+  debug_init();
+  env_init();
+  mcu_init();
+  events_init();
+  visual_init();
+
+  terminal_writestring("All components initialized!\n");
 }
+
+void kernel_main(void) { kernel_init(); }

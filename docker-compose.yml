@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # Build service - builds your OS
+  build:
+    image: myos-builder
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: myos-build
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    user: "${UID:-1000}:${GID:-1000}"
+    command: make all
+    
+  # Clean service - removes build artifacts
+  clean:
+    image: myos-builder
+    container_name: myos-clean
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    user: "${UID:-1000}:${GID:-1000}"
+    command: make clean
+    
+  # Dev environment - keeps container running for interactive use
+  dev:
+    image: myos-builder
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: myos-dev
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    user: "${UID:-1000}:${GID:-1000}"
+    stdin_open: true
+    tty: true
+    command: /bin/bash

@@ -1,0 +1,16 @@
+{
+  "name": "MyOS Development",
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "context": ".."
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools"
+      ]
+    }
+  },
+  "postCreateCommand": "echo 'Dev container ready!'",
+  "remoteUser": "root"
+}

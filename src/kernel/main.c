@@ -1,4 +1,6 @@
 #include "../../include/copium.h"
+#include "../../include/framebuffer.h"
+#include "../../include/multiboot.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -118,10 +120,77 @@ void terminal_writestring(const char *data) {
   terminal_write(data, strlen(data));
 }
 
-void kernel_init(void) {
-  terminal_initialize();
-  terminal_writestring("ScopeOS v0.1.0\n");
-  terminal_writestring("Initializing components...\n");
+// Serial port output for debugging
+void serial_putchar(char c) {
+  // COM1 port 0x3F8
+  while ((*(volatile uint8_t *)0x3FD & 0x20) == 0)
+    ;
+  *(volatile uint8_t *)0x3F8 = c;
+}
+
+void serial_write(const char *str) {
+  while (*str) {
+    serial_putchar(*str++);
+  }
+}
+
+// Parse Multiboot2 tags to find framebuffer info
+bool parse_multiboot2_tags(struct multiboot_info *mbi) {
+  struct multiboot_tag *tag;
+
+  // Tags start after the fixed-size header
+  for (tag = (struct multiboot_tag *)(mbi->tags);
+       tag->type != MULTIBOOT_TAG_TYPE_END;
+       tag =
+           (struct multiboot_tag *)((uint8_t *)tag + ((tag->size + 7) & ~7))) {
+
+    if (tag->type == MULTIBOOT_TAG_TYPE_FRAMEBUFFER) {
+      struct multiboot_tag_framebuffer *fb_tag =
+          (struct multiboot_tag_framebuffer *)tag;
+
+      serial_write("Found framebuffer tag!\n");
+
+      // Initialize framebuffer
+      framebuffer_init(fb_tag->framebuffer_addr, fb_tag->framebuffer_width,
+                       fb_tag->framebuffer_height, fb_tag->framebuffer_pitch,
+                       fb_tag->framebuffer_bpp);
+
+      return true;
+    }
+  }
+
+  return false;
+}
+
+void kernel_init(uint32_t magic, multiboot_info_t *mbi) {
+  if (magic != MULTIBOOT2_BOOTLOADER_MAGIC) {
+    serial_write("ERROR: Invalid multiboot magic\n");
+    for (;;) {
+      __asm__ volatile("hlt");
+    }
+  }
+
+  serial_write("Copium OS - Serial Output Active\n");
+
+  // Parse Multiboot2 tags to get framebuffer
+  bool has_framebuffer = parse_multiboot2_tags(mbi);
+
+  if (has_framebuffer) {
+    serial_write("Framebuffer initialized!\n");
+
+    // Clear screen to blue background
+    framebuffer_clear(RGB(0, 0, 128));
+
+    // Draw title
+    framebuffer_print("Copium OS v0.1.0", 10, 10, COLOR_YELLOW);
+    framebuffer_print("Kernel booted successfully!", 10, 20, COLOR_WHITE);
+  } else {
+    // Fallback to VGA text mode
+    serial_write("No framebuffer, using VGA text mode\n");
+    terminal_initialize();
+    terminal_writestring("Copium OS v0.1.0\n");
+    terminal_writestring("Kernel booted successfully!\n");
+  }
 
   // Initialize all subsystems
   debug_init();
@@ -130,7 +199,17 @@ void kernel_init(void) {
   events_init();
   visual_init();
 
-  terminal_writestring("All components initialized!\n");
+  if (has_framebuffer) {
+    framebuffer_print("All components initialized!", 10, 30, COLOR_GREEN);
+    framebuffer_print("System ready.", 10, 40, COLOR_WHITE);
+  } else {
+    terminal_writestring("\nAll components initialized!\n");
+    terminal_writestring("System ready.\n");
+  }
+
+  serial_write("All components initialized\n");
 }
 
-void kernel_main(void) { kernel_init(); }
+void kernel_main(uint32_t magic, multiboot_info_t *mbi) {
+  kernel_init(magic, mbi);
+}

@@ -1,0 +1,117 @@
+ScopeOS 1-Year Plan (Biweekly)
+Start: Monday, 2026-02-09 (ISO Week 07)
+Cadence: 26 cycles, 2 weeks each
+
+Legend:
+- Weeks are ISO week numbers for 2026/2027
+- Dates are Monday–Sunday
+
+Cycle 01 | Weeks 2026-W07–W08 | 2026-02-09 → 2026-02-22
+Focus: Kernel foundations + interrupts start
+Deliverables: IDT/PIC skeleton, ISR stubs, boot-time logging baseline
+
+Cycle 02 | Weeks 2026-W09–W10 | 2026-02-23 → 2026-03-08
+Focus: Interrupt handling live
+Deliverables: PIC remap, PIT timer tick, basic IRQ plumbing
+
+Cycle 03 | Weeks 2026-W11–W12 | 2026-03-09 → 2026-03-22
+Focus: Input device path
+Deliverables: Keyboard IRQ1 driver, scancode map, input buffer
+
+Cycle 04 | Weeks 2026-W13–W14 | 2026-03-23 → 2026-04-05
+Focus: Framebuffer console usability
+Deliverables: Full ASCII font, cursor, newline + scroll
+
+Cycle 05 | Weeks 2026-W15–W16 | 2026-04-06 → 2026-04-19
+Focus: Structured logging
+Deliverables: Unified log API (serial + framebuffer), ring buffer
+
+Cycle 06 | Weeks 2026-W17–W18 | 2026-04-20 → 2026-05-03
+Focus: Multiboot2 info expansion
+Deliverables: Memory map + bootloader name tags parsed
+
+Cycle 07 | Weeks 2026-W19–W20 | 2026-05-04 → 2026-05-17
+Focus: Physical memory manager
+Deliverables: PMM bitmap init + page alloc/free
+
+Cycle 08 | Weeks 2026-W21–W22 | 2026-05-18 → 2026-05-31
+Focus: Paging + kernel heap start
+Deliverables: Identity map, kernel heap bootstrap
+
+Cycle 09 | Weeks 2026-W23–W24 | 2026-06-01 → 2026-06-14
+Focus: Heap allocators
+Deliverables: Buddy allocator + slab cache MVP
+
+Cycle 10 | Weeks 2026-W25–W26 | 2026-06-15 → 2026-06-28
+Focus: Tasking structures
+Deliverables: TCB, context frame, task list
+
+Cycle 11 | Weeks 2026-W27–W28 | 2026-06-29 → 2026-07-12
+Focus: Cooperative scheduling
+Deliverables: yield/sleep, timer-driven tick updates
+
+Cycle 12 | Weeks 2026-W29–W30 | 2026-07-13 → 2026-07-26
+Focus: Preemptive scheduling
+Deliverables: ISR preemption, time slice handling
+
+Cycle 13 | Weeks 2026-W31–W32 | 2026-07-27 → 2026-08-09
+Focus: Syscall boundary draft
+Deliverables: ABI spec stub, syscall table placeholders
+
+Cycle 14 | Weeks 2026-W33–W34 | 2026-08-10 → 2026-08-23
+Focus: Event manager core
+Deliverables: Event types, ring buffer, producers
+
+Cycle 15 | Weeks 2026-W35–W36 | 2026-08-24 → 2026-09-06
+Focus: Kernel tracing hooks
+Deliverables: IRQ/task/mem alloc trace emission
+
+Cycle 16 | Weeks 2026-W37–W38 | 2026-09-07 → 2026-09-20
+Focus: Debug transport
+Deliverables: Serial debug protocol, register snapshot API
+
+Cycle 17 | Weeks 2026-W39–W40 | 2026-09-21 → 2026-10-04
+Focus: VS Code integration start
+Deliverables: Extension skeleton, serial connection
+
+Cycle 18 | Weeks 2026-W41–W42 | 2026-10-05 → 2026-10-18
+Focus: Debugger UI
+Deliverables: Register + stack viewer panels
+
+Cycle 19 | Weeks 2026-W43–W44 | 2026-10-19 → 2026-11-01
+Focus: Event timeline UI
+Deliverables: VS Code webview timeline from event stream
+
+Cycle 20 | Weeks 2026-W45–W46 | 2026-11-02 → 2026-11-15
+Focus: Python visualization hooks
+Deliverables: Event JSON stream + Matplotlib demo
+
+Cycle 21 | Weeks 2026-W47–W48 | 2026-11-16 → 2026-11-29
+Focus: Device discovery
+Deliverables: PCI scan + device registry
+
+Cycle 22 | Weeks 2026-W49–W50 | 2026-11-30 → 2026-12-13
+Focus: MCU tooling skeleton
+Deliverables: STM32 CLI scaffold + OpenOCD integration plan
+
+Cycle 23 | Weeks 2026-W51–W52 | 2026-12-14 → 2026-12-27
+Focus: Environment/toolchain manager
+Deliverables: env create/run/attach CLI wrappers
+
+Cycle 24 | Weeks 2026-W53 & 2027-W01 | 2026-12-28 → 2027-01-10
+Focus: Snapshot/rollback model
+Deliverables: env snapshot metadata + restore workflow
+
+Cycle 25 | Weeks 2027-W02–W03 | 2027-01-11 → 2027-01-24
+Focus: Dashboard MVP
+Deliverables: Flask + Plotly dashboard reading event stream
+
+Cycle 26 | Weeks 2027-W04–W05 | 2027-01-25 → 2027-02-07
+Focus: Stabilization + demo
+Deliverables: QEMU CI, docs refresh, year‑2 backlog
+
+Scope Guardrails (Year‑1)
+- USB: detection only; full stack deferred
+- Time‑travel debugging: minimal snapshots only; full replay deferred
+- Full container isolation: wrappers over Docker/venv first
+- Filesystem: minimal RAM‑based, no persistence
